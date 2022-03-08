@@ -2,8 +2,6 @@
 
 ## **Pre-requisites**  
 
-<br>
-
 ### 1. Create the required service policies in the OCI Console, tailoring them to your needs
 (e.g. change *any-user* to the desired group, provide the path to the compartment if required)  
   
@@ -15,7 +13,6 @@ Allow service search-insights to manage vnics in compartment opensearch
 Allow service search-insights to use subnets in compartment opensearch
 Allow service search-insights to use network-security-groups in compartment opensearch
 ```
-<br>
 
 ### 2. Create a VCN with a public subnet and a private subnet
 
@@ -27,22 +24,21 @@ Custom process:
 
 “Create VCN” instead of “Start VCN Wizard”, providing your own desired details.  
 <br>
-
 ### 3. Create a VM Instance in the public subnet of the VCN
  
 Console menu &rarr; Compute &rarr; Instances &rarr; Create instance  
 Choose the instance name, compartment and select the public subnet.  
 For the other options we will use the default values (Oracle Linux 8, VM.Standard.E4.Flex, assign a public IP).  
 Decide whether you wish to use an existing SSH key, or have a new one generated. If choosing to generate, remember to download the keys.
-  
+
 <br>
 
 ## **Note** 
 For the exercise contained in this tutorial, a Mac was used. Windows command line instructions may differ.  
+
 <br>
 
 ## **Tutorial - Steps**  
-<br>
 
 ### 1. Create an OCI Search Service cluster
 
@@ -68,8 +64,6 @@ Search Service cluster details page.
 
 <img src=".//media/image4.png" style="width:6.26806in;height:1.97708in"
 alt="Graphical user interface, text, application Description automatically generated" />
-  
-<br>
 
 ### 2.  Create security rules in the VCN Security List
   
@@ -85,8 +79,6 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 
 <img src=".//media/image0.png" style="width:7.50806in;height:3.10347in" />
 
-<br>
-
 ### 3.  Download the required certificate
 
 Run the following command, replacing 'us-ashburn-1' (in both places) with the region name if required: 
@@ -94,10 +86,7 @@ Run the following command, replacing 'us-ashburn-1' (in both places) with the re
 openssl s_client -CAfile opensearch-us-ashburn-1-oci-oracleiaas-com-chain.pem -showcerts -connect amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 >> cert.pem
 ```  
 The certificate will be downloaded and saved in cert.pem, in your current directory.  
-
-
-<br>
-
+  
 ### 4.  Test the connection to OCI Search Service – OpenSearch endpoint
 
 ### 4.1. From inside the created VM instance  
@@ -114,8 +103,6 @@ curl https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opense
 curl https://10.1.1.190:9200 --insecure 
 # OpenSearch private IP example
 ```
-
-
 ### 4.2.  From your local machine, through port forwarding
 
 a. Run the following port forwarding SSH command in the Terminal. Do not
@@ -152,7 +139,6 @@ follows, regardless of what option was chosen:
   "tagline" : "The OpenSearch Project: https://opensearch.org/"
 }
 ```
-<br>
 
 ### 5. Ingest data
 
@@ -197,7 +183,6 @@ curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecur
 curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
 
 ```
-<br>
 
 ### 6. Query the OCI Search Service – Sample search query
 
@@ -210,19 +195,17 @@ curl -X GET
 "https://10.0.1.190:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
 # OpenSearch private IP example
 ```
-
 ### 6.2. From your local terminal, after port forwarding:  
 ```
 curl -X GET "https://localhost:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
 ```
-
 ### 6.3. From your local browser, after port forwarding:  
 ```
 https://localhost:9200/shakespeare/_search?q=speaker:WESTMORELAND&size=10&pretty
 ```
 
 Refer to ElasticSearch tutorials for more on query syntax.  
-<br>
+
 
 ### 7.  Connect to OCI Search Service – OpenSearch Dashboards
 
@@ -236,7 +219,6 @@ Currently, there will be a warning of the kind "your connection is not private",
 
 <img src=".//media/image7.png" style="width:6.26806in;height:2.85278in" />
   
-<br>
 
 ### 8.  Search and visualize data in OCI Search Service - OpenSearch Dashboards
 
