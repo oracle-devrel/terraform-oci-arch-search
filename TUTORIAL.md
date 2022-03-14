@@ -81,11 +81,13 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 
 ### 3.  Download the required certificate
 
-Run the following command, replacing 'us-ashburn-1' (in both places) with the region name if required: 
+Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required: 
 ```
 openssl s_client -CAfile opensearch-us-ashburn-1-oci-oracleiaas-com-chain.pem -showcerts -connect amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 >> cert.pem
 ```  
 The certificate will be downloaded and saved in cert.pem, in your current directory.  
+Click Ctrl+C if you get the command line stuck on an error. A working file is created, even in that case.  
+
   
 ### 4.  Test the connection to OCI Search Service – OpenSearch endpoint
 
@@ -150,8 +152,7 @@ curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-searc
 
 # create mapping
 
-curl
--XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
+curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
 {
   "mappings": {
     "properties": {
@@ -166,8 +167,7 @@ curl
 
 # push the dataset
 
-curl -H 'Content-Type:
-application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json
+curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json
 --insecure
 
 # check your indices
@@ -191,8 +191,7 @@ curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from
 curl -X GET "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --cacert cert.pem
 # OpenSearch API endpoint example, with certificate
 
-curl -X GET
-"https://10.0.1.190:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
+curl -X GET "https://10.0.1.190:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
 # OpenSearch private IP example
 ```
 ### 6.2. From your local terminal, after port forwarding:  
