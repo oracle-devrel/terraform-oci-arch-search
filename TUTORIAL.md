@@ -81,7 +81,7 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 
 ### 3.  Download the required certificate
 
-Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required: 
+Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required, and replacing the API endpoint (ama....:9200) with your cluster API endpoint: 
 ```
 openssl s_client -CAfile opensearch-us-ashburn-1-oci-oracleiaas-com-chain.pem -showcerts -connect amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 >> cert.pem
 ```  
@@ -106,12 +106,13 @@ curl https://10.1.1.190:9200 --insecure
 # OpenSearch private IP example
 ```
 ### 4.2.  From your local machine, through port forwarding
+### (alternative to 4.1.)
 
 a. Run the following port forwarding SSH command in the Terminal. Do not
 close the Terminal afterwards, for the connection to remain in place.
 
-``` 
-ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200<your_opensearch_private_IP>:9200 opc@<your_VM_instance_public_IP> -i <path_to_your_private_key>
+```
+ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_VM_instance_public_IP> -i <path_to_your_private_key>
 ```
 
 b. Open a new Terminal window and run the following command:
@@ -144,7 +145,10 @@ follows, regardless of what option was chosen:
 
 ### 5. Ingest data
 
-Run the following commands from within your VM instance: 
+Run the following commands from within your VM instance.  
+We are providing examples both with --cacert and --insecure.  
+When using --cacert, always use the cluster API endpoint and not the cluster private IP.
+
 ```
 # download data set
 
@@ -152,7 +156,7 @@ curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-searc
 
 # create mapping
 
-curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
+curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' --insecure -d' 
 {
   "mappings": {
     "properties": {
@@ -167,8 +171,7 @@ curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Conten
 
 # push the dataset
 
-curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json
---insecure
+curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json --insecure
 
 # check your indices
 
@@ -178,9 +181,9 @@ curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opens
 
 OR 
 
-curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
 
-curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
 
 ```
 
@@ -211,7 +214,7 @@ Refer to ElasticSearch tutorials for more on query syntax.
 From your local machine, through port forwarding
 (Ignore this step if you’ve executed it above and the connection is still open):
 ```
-ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_instance_public_ip> -i <path_to_your_private_key>
+ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_instance_public_ip> -i <path_to_your_private_key>
 ```
 Access <https://localhost:5601> in a browser of your choice.  
 Currently, there will be a warning of the kind "your connection is not private", depending on the browser. Choose the option which allows you to proceed anyway. After that, you should see the screen below.  
