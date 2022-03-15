@@ -156,7 +156,7 @@ curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-searc
 
 # create mapping
 
-curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' --insecure -d' 
+curl -XPUT "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/shakespeare" -H 'Content-Type: application/json' --cacert cert.pem -d' 
 {
   "mappings": {
     "properties": {
