@@ -169,6 +169,23 @@ curl -XPUT "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa
 }
 '
 
+curl -XPUT "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/shakespeare" -H 'Content-Type: application/json' --insecure -d' 
+{
+  "mappings": {
+    "properties": {
+    "speaker": {"type": "keyword"},
+    "play_name": {"type": "keyword"},
+    "line_id": {"type": "integer"},
+    "speech_number": {"type": "integer"}
+    }
+  }
+}
+'
+
+# delete index (testing)
+
+curl -XDELETE "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/shakespeare" --insecure
+
 # push the dataset
 
 curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json --insecure
