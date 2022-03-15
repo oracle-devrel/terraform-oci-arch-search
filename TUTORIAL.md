@@ -81,7 +81,7 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 
 ### 3.  Download the required certificate
 
-Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required: 
+Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required, and replacing the API endpoint (ama....:9200) with your cluster API endpoint: 
 ```
 openssl s_client -CAfile opensearch-us-ashburn-1-oci-oracleiaas-com-chain.pem -showcerts -connect amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 >> cert.pem
 ```  
@@ -145,7 +145,10 @@ follows, regardless of what option was chosen:
 
 ### 5. Ingest data
 
-Run the following commands from within your VM instance: 
+Run the following commands from within your VM instance.  
+We are providing examples both with --cacert and --insecure.  
+When using --cacert, always use the cluster API endpoint and not the cluster private IP.
+
 ```
 # download data set
 
@@ -153,7 +156,7 @@ curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-searc
 
 # create mapping
 
-curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
+curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' --insecure -d' 
 {
   "mappings": {
     "properties": {
