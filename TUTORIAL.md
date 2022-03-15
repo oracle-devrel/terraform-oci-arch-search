@@ -106,12 +106,13 @@ curl https://10.1.1.190:9200 --insecure
 # OpenSearch private IP example
 ```
 ### 4.2.  From your local machine, through port forwarding
+### (alternative to 4.1.)
 
 a. Run the following port forwarding SSH command in the Terminal. Do not
 close the Terminal afterwards, for the connection to remain in place.
 
-``` 
-ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200<your_opensearch_private_IP>:9200 opc@<your_VM_instance_public_IP> -i <path_to_your_private_key>
+```
+ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_VM_instance_public_IP> -i <path_to_your_private_key>
 ```
 
 b. Open a new Terminal window and run the following command:
@@ -152,7 +153,7 @@ curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-searc
 
 # create mapping
 
-curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
+curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' -d' --insecure
 {
   "mappings": {
     "properties": {
@@ -167,8 +168,7 @@ curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Conten
 
 # push the dataset
 
-curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json
---insecure
+curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json --insecure
 
 # check your indices
 
@@ -178,9 +178,9 @@ curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opens
 
 OR 
 
-curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
 
-curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
 
 ```
 
@@ -211,7 +211,7 @@ Refer to ElasticSearch tutorials for more on query syntax.
 From your local machine, through port forwarding
 (Ignore this step if you’ve executed it above and the connection is still open):
 ```
-ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_instance_public_ip> -i <path_to_your_private_key>
+ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_instance_public_ip> -i <path_to_your_private_key>
 ```
 Access <https://localhost:5601> in a browser of your choice.  
 Currently, there will be a warning of the kind "your connection is not private", depending on the browser. Choose the option which allows you to proceed anyway. After that, you should see the screen below.  
