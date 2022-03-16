@@ -111,6 +111,11 @@ curl https://10.1.1.190:9200 --insecure
 a. Run the following port forwarding SSH command in the Terminal. Do not
 close the Terminal afterwards, for the connection to remain in place.
 
+jordan
+```
+ssh -C -v -t -L 127.0.0.1:5601:10.0.211.1:5601 -L 127.0.0.1:9200:10.0.216.169:9200 opc@129.158.214.157 -i ~/.ssh/ssh-key-2022-03-14.key
+```
+format
 ```
 ssh -C -v -t -L 127.0.0.1:5601:<your_opensearch_dashboards_private_IP>:5601 -L 127.0.0.1:9200:<your_opensearch_private_IP>:9200 opc@<your_VM_instance_public_IP> -i <path_to_your_private_key>
 ```
