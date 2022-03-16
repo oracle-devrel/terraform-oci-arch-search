@@ -192,7 +192,13 @@ curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_pr
 
 # check your indices
 
+jordan: curl "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/_cat/indices" --cacert cert.pem
+
 curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/_cat/indices" --cacert cert.pem
+
+curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci_metrics/_search?from=40&size=1000&pretty" --cacert cert.pem
+
+jordan: curl "https://amaaaaaakztjrmiaca3oyxmzegtn25lfh77dmc6heo65r647cc4u3qvz4ewa.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci_metrics/_search?from=40&size=1000&pretty" --cacert cert.pem
 
 curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci_metrics/_search?from=40&size=1000&pretty" --cacert cert.pem
 
