@@ -78,15 +78,14 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 <img src=".//media/image6.png" style="width:6.26806in;height:2.39722in" />
 
 <img src=".//media/image0.png" style="width:7.50806in;height:3.10347in" />
-
+  
 ### 3.  Download the required certificate
 
-Run the following command from inside the created VM instance, replacing 'us-ashburn-1' (in both places) with the region name if required, and replacing the API endpoint (ama....:9200) with your cluster API endpoint: 
+Run the following command from inside the created VM instance.  
 ```
-openssl s_client -CAfile opensearch-us-ashburn-1-oci-oracleiaas-com-chain.pem -showcerts -connect amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 >> cert.pem
+curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-search/main/cert.pem
 ```  
-The certificate will be downloaded and saved in cert.pem, in your current directory.  
-Click Ctrl+C if you get the command line stuck on an error. A working file is created, even in that case.  
+The certificate will be downloaded and saved as cert.pem, in your current directory.  
 
   
 ### 4.  Test the connection to OCI Search Service – OpenSearch endpoint
