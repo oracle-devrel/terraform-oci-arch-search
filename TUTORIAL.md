@@ -24,6 +24,7 @@ Custom process:
 
 “Create VCN” instead of “Start VCN Wizard”, providing your own desired details.  
 <br>
+
 ### 3. Create a VM Instance in the public subnet of the VCN
  
 Console menu &rarr; Compute &rarr; Instances &rarr; Create instance  
@@ -34,13 +35,11 @@ Decide whether you wish to use an existing SSH key, or have a new one generated.
 <br>
 
 ## **Note** 
-For the exercise contained in this tutorial, a Mac was used. Windows command line instructions may differ.  
+For the exercise contained in this tutorial, a Mac and an Oracle Linux instance were used. Windows command line instructions may differ.  
 
 <br>
 
-## **Tutorial - Steps**  
-
-### 1. Create an OCI Search Service cluster
+## 1. Create an OCI Search Service cluster
 
 Console menu &rarr; Databases &rarr; OCI Search Service &rarr; Clusters  
 Choose the cluster name and compartment where to create the cluster
@@ -65,7 +64,7 @@ Search Service cluster details page.
 <img src=".//media/image4.png" style="width:6.26806in;height:1.97708in"
 alt="Graphical user interface, text, application Description automatically generated" />
 
-### 2.  Create security rules in the VCN Security List
+## 2.  Create security rules in the VCN Security List
   
 In the VCN, create a Security List with the following security rules. Alternatively, they can be added to the VCN Default Security List.  
 Within your VCN details page &rarr; Security Lists &rarr; chosen Security
@@ -79,16 +78,18 @@ Add a rule for port 9200 (OpenSearch), and a rule for 5601 (OpenSearch Dashboard
 
 <img src=".//media/image0.png" style="width:7.50806in;height:3.10347in" />
   
-### 3.  Download the required certificate
+
+## 3.  Download the required certificate
 
 Run the following command from inside the created VM instance.  
 ```
 curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-search/main/cert.pem
 ```  
 The certificate will be downloaded and saved as cert.pem, in your current directory.  
-
+Note: this certificate is suitable to region us-ashburn-1.
   
-### 4.  Test the connection to OCI Search Service – OpenSearch endpoint
+
+## 4.  Test the connection to OCI Search Service – OpenSearch endpoint
 
 ### 4.1. From inside the created VM instance  
   
@@ -104,8 +105,8 @@ curl https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opense
 curl https://10.1.1.190:9200 --insecure 
 # OpenSearch private IP example
 ```
-### 4.2.  From your local machine, through port forwarding
-### (alternative to 4.1.)
+## 4.2.  From your local machine, through port forwarding
+## (alternative to 4.1.)
 
 a. Run the following port forwarding SSH command in the Terminal. Do not
 close the Terminal afterwards, for the connection to remain in place.
@@ -142,73 +143,86 @@ follows, regardless of what option was chosen:
 }
 ```
 
-### 5. Ingest data
+## 5. Ingest data
 
 Run the following commands from within your VM instance.  
 We are providing examples both with --cacert and --insecure.  
 When using --cacert, always use the cluster API endpoint and not the cluster private IP.
 
+### 5.1. Download the sample data set
+
 ```
-# download data set
+curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-search/main/OCI_services.json
+```
 
-curl -O https://raw.githubusercontent.com/oracle-devrel/terraform-oci-arch-search/main/shakespeare.json
+### 5.2. Create mapping (optional)
+  
+If you don't run this command, nor any variation of it, a default mapping will be auto-created.
 
-# create mapping
-
-curl -XPUT "https://<your_opensearch_private_IP>:9200/shakespeare" -H 'Content-Type: application/json' --insecure -d' 
+```
+curl -XPUT "https://<your_opensearch_private_IP>:9200/oci" -H 'Content-Type: application/json' --insecure -d' 
 {
   "mappings": {
     "properties": {
-    "speaker": {"type": "keyword"},
-    "play_name": {"type": "keyword"},
-    "line_id": {"type": "integer"},
-    "speech_number": {"type": "integer"}
+    "id": {"type": "integer"},
+    "category": {"type": "keyword"},
+    "text": {"type": "text"},
+    "title": {"type": "text"},
+    "url": {"type": "text"}
     }
   }
 }
 '
+```
 
-# push the dataset
+### 5.3. Push the data set
 
-curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/shakespeare/_bulk?pretty" --data-binary @shakespeare.json --insecure
+```
+curl -H 'Content-Type: application/x-ndjson' -XPOST "https://<your_opensearch_private_IP>:9200/oci/_bulk?pretty" --data-binary @OCI_services.json --insecure
+```
 
-# check your indices
+### 5.4. check your indices
 
+```
 curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/_cat/indices" --cacert cert.pem
-
-curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci_metrics/_search?from=40&size=1000&pretty" --cacert cert.pem
+# OpenSearch API endpoint example, with certificate
+```
 
 OR 
 
-curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
-
-curl -X GET "https://<your_opensearch_private_IP>:9200/oci_metrics/_search?from=40&size=1000&pretty" --insecure
-
 ```
+curl -X GET "https://10.0.1.190:9200/_cat/indices" --insecure
+# OpenSearch private IP example
+```
+  
 
-### 6. Query the OCI Search Service – Sample search query
+## 6. Query the OCI Search Service – Sample search query
 
 ### 6.1. From the VM instance shell:
 ```
-curl -X GET "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --cacert cert.pem
+curl -X GET "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci/_search?q=title:Kubernetes&pretty" --cacert cert.pem
 # OpenSearch API endpoint example, with certificate
+```
 
-curl -X GET "https://10.0.1.190:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
+OR
+
+```
+curl -X GET "https://10.0.1.190:9200/oci/_search?q=title:Kubernetes&pretty" --insecure
 # OpenSearch private IP example
 ```
 ### 6.2. From your local terminal, after port forwarding:  
 ```
-curl -X GET "https://localhost:9200/shakespeare/_search?q=speaker:WESTMORELAND&pretty" --insecure
+curl -X GET "https://localhost:9200/oci/_search?q=title:Kubernetes&pretty" --insecure
 ```
 ### 6.3. From your local browser, after port forwarding:  
 ```
-https://localhost:9200/shakespeare/_search?q=speaker:WESTMORELAND&size=10&pretty
+https://localhost:9200/oci/_search?q=title:Kubernetes&pretty
 ```
 
-Refer to ElasticSearch tutorials for more on query syntax.  
+Refer to OpenSearch or ElasticSearch tutorials for more on query syntax.  
+  
 
-
-### 7.  Connect to OCI Search Service – OpenSearch Dashboards
+## 7.  Connect to OCI Search Service – OpenSearch Dashboards
 
 From your local machine, through port forwarding
 (Ignore this step if you’ve executed it above and the connection is still open):
@@ -221,20 +235,16 @@ Currently, there will be a warning of the kind "your connection is not private",
 <img src=".//media/image7.png" style="width:6.26806in;height:2.85278in" />
   
 
-### 8.  Search and visualize data in OCI Search Service - OpenSearch Dashboards
+## 8.  Search and visualize data in OCI Search Service - OpenSearch Dashboards
 
-With the port forwarding connection in place, access https://localhost:5601 in your browser.
-
-<img src=".//media/image8.png" style="width:6.26806in;height:3.20903in" />
-
-Go to Menu &rarr; Management &rarr; Stack Management &rarr; Index Patterns
-and create an index pattern, with name = `shakespeare*`
+With the port forwarding connection in place, access https://localhost:5601 in your browser.  
+Go to Menu &rarr; Management &rarr; Stack Management &rarr; Index Patterns and create an index pattern, with name = `oci`
 
 <img src=".//media/image9.png" style="width:6.26806in;height:3.17014in" />
 
 Go to Menu &rarr; Discover to use the Dashboards UI to search your data.  
   
-<img src=".//media/image10.png" style="width:6.26806in;height:3.52639in" />
+<img src=".//media/image10.png" style="width:6.26806in;height:3.12639in" />
 
 Go to Menu &rarr; Dashboards and follow the steps below to create a sample
 pie chart.
@@ -243,7 +253,7 @@ a.  Create new &rarr; New Visualization &rarr; Pie
 
 <img src=".//media/image11.png" style="width:6.26806in;height:3.19444in" />
 
-b.  Choose `shakespeare*` as source
+b.  Choose `oci` as source
 
 c.  In Buckets, click ‘Add’ &rarr; Split slices, provide the parameters
     as below and click ‘Update’
