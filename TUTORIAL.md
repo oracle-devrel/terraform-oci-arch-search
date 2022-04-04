@@ -8,10 +8,10 @@
 Working policies:  
 
 ```
-Allow any-user to manage search-insights-family in compartment opensearch
-Allow service search-insights to manage vnics in compartment opensearch
-Allow service search-insights to use subnets in compartment opensearch
-Allow service search-insights to use network-security-groups in compartment opensearch
+Allow group <your_group> to manage opensearch-family in compartment opensearch
+Allow service opensearch to manage vnics in compartment opensearch
+Allow service opensearch to use subnets in compartment opensearch
+Allow service opensearch to use network-security-groups in compartment opensearch
 ```
 
 ### 2. Create a VCN with a public subnet and a private subnet
