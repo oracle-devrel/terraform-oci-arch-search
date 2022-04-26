@@ -99,7 +99,7 @@ ssh -i ~/.ssh/id_rsa_opensearch.key opc@<your_VM_instance_public_IP>
 ```
 b.  Run one of the following commands:
 ```
-curl https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200 --cacert cert.pem
+curl https://myhost.opensearch.us.example.com:9200 --cacert cert.pem
 # OpenSearch API endpoint example, with certificate
 
 curl https://10.1.1.190:9200 --insecure 
@@ -191,7 +191,7 @@ curl "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opens
 OR 
 
 ```
-curl -X GET "https://10.0.1.190:9200/_cat/indices" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/_cat/indices" --insecure
 # OpenSearch private IP example
 ```
   
@@ -200,14 +200,14 @@ curl -X GET "https://10.0.1.190:9200/_cat/indices" --insecure
 
 ### 6.1. From the VM instance shell:
 ```
-curl -X GET "https://amaaaaaanlc5nbya44qen6foty3gyu7ihpo22mzmtjw5ixtcjgetjcqwipuq.opensearch.us-ashburn-1.oci.oracleiaas.com:9200/oci/_search?q=title:Kubernetes&pretty" --cacert cert.pem
+curl -X GET "https://myhost.opensearch.us.example.com:9200/oci/_search?q=title:Kubernetes&pretty" --cacert cert.pem
 # OpenSearch API endpoint example, with certificate
 ```
 
 OR
 
 ```
-curl -X GET "https://10.0.1.190:9200/oci/_search?q=title:Kubernetes&pretty" --insecure
+curl -X GET "https://<your_opensearch_private_IP>:9200/oci/_search?q=title:Kubernetes&pretty" --insecure
 # OpenSearch private IP example
 ```
 ### 6.2. From your local terminal, after port forwarding:  
